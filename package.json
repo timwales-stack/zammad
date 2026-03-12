@@ -189,5 +189,26 @@
     "loader-utils": "^3.3.1",
     "postcss": "^8.5.8",
     "stylelint-config-recommended": "^18.0.0"
-  }
+  },
+  "name": "zammad",
+  "version": "1.0.0",
+  "description": "Are you juggling countless customer inquiries across multiple channels?\r Struggling to keep your support team on the same page?\r Or spending more time managing your helpdesk than delivering exceptional support to your customers?",
+  "main": ".graphql_code_generator.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timwales-stack/zammad.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/timwales-stack/zammad/issues"
+  },
+  "homepage": "https://github.com/timwales-stack/zammad#readme"
 }

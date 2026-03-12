@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 10 100 84" width="64" height="64">
+  <rect width="110" height="100" fill="#0d0e12" rx="8" x="0" y="0" />
+  <!-- Left pillar -->
+  <rect x="15" y="18" width="16" height="64" rx="1" fill="#4752c4" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" />
+  <!-- Left diagonal -->
+  <polygon points="31,18 50,50 31,82 31,18" fill="#5865f2" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" />
+  <!-- Center chevron -->
+  <polygon points="31,18 50,50 69,18 50,30" fill="#00d4ff" opacity="0.28" stroke="rgba(255,255,255,0.08)" stroke-width="0.4" />
+  <!-- Right diagonal -->
+  <polygon points="69,18 50,50 69,82 69,18" fill="#6b73f5" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" />
+  <!-- Right pillar -->
+  <rect x="69" y="18" width="16" height="64" rx="1" fill="#5865f2" stroke="rgba(255,255,255,0.12)" stroke-width="0.5" />
+  <!-- Cyan M outline -->
+  <path d="M15 82 L15 18 L31 18 L50 50 L69 18 L85 18 L85 82 L69 82 L69 40 L50 68 L31 40 L31 82 Z" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Crown highlight -->
+  <path d="M15 18 L31 18 L50 50 L69 18 L85 18" fill="none" stroke="white" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.45" />
+  <!-- AI mark -->
+  <text font-family="system-ui, sans-serif" font-size="9" font-weight="800" letter-spacing="0.5" fill="#00d4ff" x="87" y="22">AI</text>
+</svg>

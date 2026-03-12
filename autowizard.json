@@ -1,0 +1,64 @@
+{
+  "Users": [
+    {
+      "login": "admin@blackravenit.com",
+      "firstname": "Admin",
+      "lastname": "Black Raven",
+      "email": "admin@blackravenit.com",
+      "password": "BlackRaven2024!",
+      "organization": "Black Raven IT",
+      "roles": ["Admin", "Agent"]
+    },
+    {
+      "login": "tech@blackravenit.com",
+      "firstname": "Tech",
+      "lastname": "Lead",
+      "email": "tech@blackravenit.com",
+      "password": "TechLead2024!",
+      "organization": "Black Raven IT",
+      "roles": ["Agent"]
+    },
+    {
+      "login": "helpdesk@blackravenit.com",
+      "firstname": "Helpdesk",
+      "lastname": "Agent",
+      "email": "helpdesk@blackravenit.com",
+      "password": "Helpdesk2024!",
+      "organization": "Black Raven IT",
+      "roles": ["Agent"]
+    },
+    {
+      "login": "client@testcorp.com",
+      "firstname": "Test",
+      "lastname": "Client",
+      "email": "client@testcorp.com",
+      "password": "TestClient2024!",
+      "organization": "TestCorp Industries",
+      "roles": ["Customer"]
+    }
+  ],
+  "Groups": [
+    { "name": "Helpdesk", "note": "General IT support tickets" },
+    { "name": "Network", "note": "Network infrastructure issues" },
+    { "name": "Security", "note": "Security incidents and requests" },
+    { "name": "Cloud", "note": "Cloud/Azure/M365 issues" },
+    { "name": "Onboarding", "note": "New employee setup" }
+  ],
+  "Organizations": [
+    { "name": "Black Raven IT", "domain": "blackravenit.com", "active": true },
+    { "name": "TestCorp Industries", "domain": "testcorp.com", "active": true },
+    { "name": "Acme Healthcare", "domain": "acmehealthcare.com", "active": true }
+  ],
+  "Settings": [
+    { "name": "product_name", "value": "Black Raven Service Desk" },
+    { "name": "organization", "value": "Black Raven IT" },
+    { "name": "system_id", "value": "BR" },
+    { "name": "fqdn", "value": "localhost" },
+    { "name": "http_type", "value": "http" },
+    { "name": "locale_default", "value": "en-us" },
+    { "name": "timezone_default", "value": "America/Chicago" }
+  ],
+  "TextModuleLocale": {
+    "Locale": "en-us"
+  }
+}

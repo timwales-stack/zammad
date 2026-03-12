@@ -3,109 +3,42 @@
 #
 # Usage:
 #   docker compose -f docker-compose.local.yml up -d
-#   Open: http://localhost:8080
+#   Open: http://localhost:8090
+#
+# First boot takes ~3-5 minutes (database init + asset compilation)
+
+x-shared:
+  zammad-service: &zammad-service
+    image: ghcr.io/zammad/zammad:latest
+    restart: unless-stopped
+    environment: &zammad-environment
+      MEMCACHE_SERVERS: zammad-memcached:11211
+      POSTGRESQL_DB: zammad_production
+      POSTGRESQL_HOST: zammad-postgresql
+      POSTGRESQL_USER: zammad
+      POSTGRESQL_PASS: zammad_local_dev
+      POSTGRESQL_PORT: "5432"
+      REDIS_URL: redis://zammad-redis:6379
+      ELASTICSEARCH_HOST: zammad-elasticsearch
+      ELASTICSEARCH_PORT: "9200"
+      ELASTICSEARCH_SCHEMA: http
+      AUTOWIZARD_RELATIVE_PATH: autowizard.json
+    volumes: &zammad-volumes
+      - zammad-storage:/opt/zammad/storage
+      - ./autowizard.json:/opt/zammad/autowizard.json:ro
+      - ./custom/css/blackraven-theme.css:/opt/zammad/public/assets/blackraven-theme.css:ro
+      - ./custom/logo.svg:/opt/zammad/public/assets/images/logo.svg:ro
+      - ./custom/favicon.ico:/opt/zammad/public/favicon.ico:ro
+      - ./custom/apple-touch-icon.png:/opt/zammad/public/apple-touch-icon.png:ro
+      - ./custom/morpheus-logo.svg:/opt/zammad/public/assets/morpheus-logo.svg:ro
+      - ./custom/inject-branding.sh:/docker-entrypoint.d/inject-branding.sh:ro
+      - ./custom/icons/logo.svg:/opt/zammad/public/assets/images/icons/logo.svg:ro
+      - ./custom/icons/logotype.svg:/opt/zammad/public/assets/images/icons/logotype.svg:ro
+      - ./custom/icons/full-logo.svg:/opt/zammad/public/assets/images/icons/full-logo.svg:ro
 
 services:
 
-  zammad-railsserver:
-    image: ghcr.io/zammad/zammad:latest
-    container_name: br-zammad-rails
-    restart: unless-stopped
-    command: ["zammad-railsserver"]
-    environment:
-      RAILS_ENV: production
-      POSTGRESQL_HOST: postgresql
-      POSTGRESQL_PORT: "5432"
-      POSTGRESQL_USER: zammad
-      POSTGRESQL_PASS: zammad_local_dev
-      POSTGRESQL_DB: zammad_production
-      REDIS_URL: redis://redis:6379
-      ELASTICSEARCH_HOST: elasticsearch
-      ELASTICSEARCH_PORT: "9200"
-      ELASTICSEARCH_SCHEMA: http
-    volumes:
-      - zammad-data:/opt/zammad/storage
-      - zammad-var:/opt/zammad/var
-    ports:
-      - "8080:3000"
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/v1/monitoring/health_check"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 180s
-
-  zammad-websocket:
-    image: ghcr.io/zammad/zammad:latest
-    container_name: br-zammad-ws
-    restart: unless-stopped
-    command: ["zammad-websocket"]
-    environment:
-      RAILS_ENV: production
-      POSTGRESQL_HOST: postgresql
-      POSTGRESQL_PORT: "5432"
-      POSTGRESQL_USER: zammad
-      POSTGRESQL_PASS: zammad_local_dev
-      POSTGRESQL_DB: zammad_production
-      REDIS_URL: redis://redis:6379
-    depends_on:
-      - zammad-railsserver
-
-  zammad-scheduler:
-    image: ghcr.io/zammad/zammad:latest
-    container_name: br-zammad-scheduler
-    restart: unless-stopped
-    command: ["zammad-scheduler"]
-    environment:
-      RAILS_ENV: production
-      POSTGRESQL_HOST: postgresql
-      POSTGRESQL_PORT: "5432"
-      POSTGRESQL_USER: zammad
-      POSTGRESQL_PASS: zammad_local_dev
-      POSTGRESQL_DB: zammad_production
-      REDIS_URL: redis://redis:6379
-      ELASTICSEARCH_HOST: elasticsearch
-      ELASTICSEARCH_PORT: "9200"
-      ELASTICSEARCH_SCHEMA: http
-    depends_on:
-      - zammad-railsserver
-
-  postgresql:
-    image: postgres:16-alpine
-    container_name: br-postgresql
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: zammad
-      POSTGRES_PASSWORD: zammad_local_dev
-      POSTGRES_DB: zammad_production
-    volumes:
-      - postgresql-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U zammad -d zammad_production"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  redis:
-    image: redis:7-alpine
-    container_name: br-redis
-    restart: unless-stopped
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  elasticsearch:
+  zammad-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
     container_name: br-elasticsearch
     restart: unless-stopped
@@ -115,16 +48,75 @@ services:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+
+  zammad-init:
+    <<: *zammad-service
+    container_name: br-zammad-init
+    command: ["zammad-init"]
+    restart: on-failure
+    user: 0:0
+    depends_on:
+      - zammad-postgresql
+
+  zammad-memcached:
+    image: memcached:1.6-alpine
+    container_name: br-memcached
+    command: memcached -m 256M
+    restart: unless-stopped
+
+  zammad-nginx:
+    <<: *zammad-service
+    container_name: br-zammad-nginx
+    command: ["/bin/bash", "-c", "bash /docker-entrypoint.d/inject-branding.sh && exec /opt/zammad/bin/docker-entrypoint zammad-nginx"]
+    ports:
+      - "8090:8080"
+    depends_on:
+      - zammad-railsserver
+
+  zammad-postgresql:
+    image: postgres:16-alpine
+    container_name: br-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zammad
+      POSTGRES_PASSWORD: zammad_local_dev
+      POSTGRES_DB: zammad_production
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+
+  zammad-railsserver:
+    <<: *zammad-service
+    container_name: br-zammad-rails
+    command: ["/bin/bash", "-c", "bash /docker-entrypoint.d/inject-branding.sh && exec /opt/zammad/bin/docker-entrypoint zammad-railsserver"]
+    depends_on:
+      - zammad-init
+      - zammad-memcached
+      - zammad-postgresql
+      - zammad-redis
+
+  zammad-redis:
+    image: redis:7-alpine
+    container_name: br-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+  zammad-scheduler:
+    <<: *zammad-service
+    container_name: br-zammad-scheduler
+    command: ["zammad-scheduler"]
+    depends_on:
+      - zammad-railsserver
+
+  zammad-websocket:
+    <<: *zammad-service
+    container_name: br-zammad-ws
+    command: ["zammad-websocket"]
+    depends_on:
+      - zammad-railsserver
 
 volumes:
-  zammad-data:
-  zammad-var:
+  elasticsearch-data:
   postgresql-data:
   redis-data:
-  elasticsearch-data:
+  zammad-storage:
