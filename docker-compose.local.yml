@@ -1,0 +1,130 @@
+# Black Raven Service Desk — Local Development / POC
+# No SSL, no NinjaOne bridge, no ClamAV — just the core Zammad stack
+#
+# Usage:
+#   docker compose -f docker-compose.local.yml up -d
+#   Open: http://localhost:8080
+
+services:
+
+  zammad-railsserver:
+    image: ghcr.io/zammad/zammad:latest
+    container_name: br-zammad-rails
+    restart: unless-stopped
+    command: ["zammad-railsserver"]
+    environment:
+      RAILS_ENV: production
+      POSTGRESQL_HOST: postgresql
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USER: zammad
+      POSTGRESQL_PASS: zammad_local_dev
+      POSTGRESQL_DB: zammad_production
+      REDIS_URL: redis://redis:6379
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: "9200"
+      ELASTICSEARCH_SCHEMA: http
+    volumes:
+      - zammad-data:/opt/zammad/storage
+      - zammad-var:/opt/zammad/var
+    ports:
+      - "8080:3000"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/v1/monitoring/health_check"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+
+  zammad-websocket:
+    image: ghcr.io/zammad/zammad:latest
+    container_name: br-zammad-ws
+    restart: unless-stopped
+    command: ["zammad-websocket"]
+    environment:
+      RAILS_ENV: production
+      POSTGRESQL_HOST: postgresql
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USER: zammad
+      POSTGRESQL_PASS: zammad_local_dev
+      POSTGRESQL_DB: zammad_production
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - zammad-railsserver
+
+  zammad-scheduler:
+    image: ghcr.io/zammad/zammad:latest
+    container_name: br-zammad-scheduler
+    restart: unless-stopped
+    command: ["zammad-scheduler"]
+    environment:
+      RAILS_ENV: production
+      POSTGRESQL_HOST: postgresql
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_USER: zammad
+      POSTGRESQL_PASS: zammad_local_dev
+      POSTGRESQL_DB: zammad_production
+      REDIS_URL: redis://redis:6379
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: "9200"
+      ELASTICSEARCH_SCHEMA: http
+    depends_on:
+      - zammad-railsserver
+
+  postgresql:
+    image: postgres:16-alpine
+    container_name: br-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zammad
+      POSTGRES_PASSWORD: zammad_local_dev
+      POSTGRES_DB: zammad_production
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zammad -d zammad_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: br-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    container_name: br-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  zammad-data:
+  zammad-var:
+  postgresql-data:
+  redis-data:
+  elasticsearch-data:

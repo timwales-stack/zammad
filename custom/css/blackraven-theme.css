@@ -1,0 +1,321 @@
+/*
+ * Black Raven Service Desk — Custom Theme
+ * Brand: Monochrome pixel/terminal aesthetic with green accent
+ *
+ * Colors:
+ *   Primary:   #0a0a0a (black)
+ *   Secondary: #1a1a1a (dark gray)
+ *   Accent:    #00ff41 (terminal green)
+ *   Text:      #ffffff (white), #aaaaaa (secondary), #6a6a6a (muted)
+ *   Border:    #2a2a2a, #3a3a3a
+ *
+ * Fonts: Space Mono (monospace), Press Start 2P (headings/accents)
+ *
+ * Apply via: Zammad Admin → Settings → Branding → Custom CSS
+ * Or place in: /opt/zammad/app/assets/stylesheets/custom/
+ */
+
+/* ─── Global Overrides ─────────────────────────────────── */
+
+/* Navigation bar */
+.navigation {
+  background-color: #0a0a0a !important;
+  border-right: 1px solid #2a2a2a !important;
+}
+
+.navigation .logo {
+  filter: brightness(1.1);
+}
+
+/* Top bar / header */
+.header {
+  background-color: #1a1a1a !important;
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+/* ─── Sidebar / Navigation Items ──────────────────────── */
+
+.navigation .menu-item {
+  color: #aaaaaa !important;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.navigation .menu-item:hover {
+  color: #00ff41 !important;
+  background-color: rgba(0, 255, 65, 0.05) !important;
+}
+
+.navigation .menu-item.is-active {
+  color: #00ff41 !important;
+  background-color: rgba(0, 255, 65, 0.08) !important;
+  border-left: 3px solid #00ff41 !important;
+}
+
+/* ─── Main Content Area ───────────────────────────────── */
+
+.main {
+  background-color: #111111 !important;
+}
+
+.content {
+  background-color: #1a1a1a !important;
+}
+
+/* ─── Buttons ─────────────────────────────────────────── */
+
+/* Primary button — terminal green */
+.btn--primary,
+.btn--action {
+  background-color: #00ff41 !important;
+  color: #0a0a0a !important;
+  border: none !important;
+  font-weight: 700 !important;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn--primary:hover,
+.btn--action:hover {
+  background-color: #00cc34 !important;
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.3) !important;
+}
+
+/* Secondary button */
+.btn--secondary {
+  background-color: transparent !important;
+  color: #00ff41 !important;
+  border: 1px solid #00ff41 !important;
+}
+
+.btn--secondary:hover {
+  background-color: rgba(0, 255, 65, 0.1) !important;
+}
+
+/* Danger button — keep red for destructive actions */
+.btn--danger {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+/* ─── Tickets ─────────────────────────────────────────── */
+
+/* Ticket list */
+.ticket-list .ticket-list-item {
+  border-bottom: 1px solid #2a2a2a !important;
+  transition: background-color 0.15s ease;
+}
+
+.ticket-list .ticket-list-item:hover {
+  background-color: rgba(0, 255, 65, 0.03) !important;
+}
+
+.ticket-list .ticket-list-item.is-active {
+  background-color: rgba(0, 255, 65, 0.06) !important;
+  border-left: 3px solid #00ff41 !important;
+}
+
+/* Ticket detail */
+.ticket-article {
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+/* ─── Priority Colors ─────────────────────────────────── */
+
+.priority.icon-priority-1 { color: #3b82f6 !important; }  /* Low — blue */
+.priority.icon-priority-2 { color: #f59e0b !important; }  /* Normal — amber */
+.priority.icon-priority-3 { color: #dc2626 !important; }  /* High — red */
+
+/* ─── Forms & Inputs ──────────────────────────────────── */
+
+input, textarea, select,
+.form-control {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+  transition: border-color 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus,
+.form-control:focus {
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.15) !important;
+  outline: none !important;
+}
+
+/* Placeholder text */
+input::placeholder,
+textarea::placeholder {
+  color: #6a6a6a !important;
+}
+
+/* ─── Tables ──────────────────────────────────────────── */
+
+table {
+  border-collapse: collapse !important;
+}
+
+table th {
+  background-color: #1a1a1a !important;
+  color: #aaaaaa !important;
+  border-bottom: 2px solid #00ff41 !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+table td {
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+table tr:hover td {
+  background-color: rgba(0, 255, 65, 0.03) !important;
+}
+
+/* ─── Tags & Badges ───────────────────────────────────── */
+
+.badge,
+.tag {
+  background-color: rgba(0, 255, 65, 0.1) !important;
+  color: #00ff41 !important;
+  border: 1px solid rgba(0, 255, 65, 0.3) !important;
+  border-radius: 2px !important;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+}
+
+/* ─── Cards & Panels ──────────────────────────────────── */
+
+.card,
+.panel,
+.sidebar-content {
+  background-color: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 4px !important;
+}
+
+/* ─── Modals & Dialogs ────────────────────────────────── */
+
+.modal-dialog .modal-content {
+  background-color: #1a1a1a !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ─── Login Page ──────────────────────────────────────── */
+
+.login {
+  background-color: #0a0a0a !important;
+}
+
+.login .hero-unit {
+  background-color: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+}
+
+.login .btn--primary {
+  background-color: #00ff41 !important;
+  color: #0a0a0a !important;
+}
+
+/* Microsoft OAuth button styling */
+.auth-provider .auth-provider-item {
+  background-color: #1a1a1a !important;
+  border: 1px solid #3a3a3a !important;
+  color: #ffffff !important;
+}
+
+.auth-provider .auth-provider-item:hover {
+  border-color: #00ff41 !important;
+  background-color: rgba(0, 255, 65, 0.05) !important;
+}
+
+/* ─── Scrollbars ──────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff41;
+}
+
+/* ─── Notifications / Toasts ──────────────────────────── */
+
+.noty_bar {
+  border: 1px solid #3a3a3a !important;
+  background-color: #1a1a1a !important;
+}
+
+.noty_type__success {
+  border-left: 4px solid #00ff41 !important;
+}
+
+.noty_type__error {
+  border-left: 4px solid #dc2626 !important;
+}
+
+.noty_type__warning {
+  border-left: 4px solid #f59e0b !important;
+}
+
+/* ─── Dashboard / Stats ───────────────────────────────── */
+
+.stat-widget {
+  background-color: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+}
+
+.stat-widget .stat-value {
+  color: #00ff41 !important;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ─── Search ──────────────────────────────────────────── */
+
+.search input {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+.search input:focus {
+  border-color: #00ff41 !important;
+}
+
+/* ─── Typography Overrides ────────────────────────────── */
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  color: #ffffff !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+a {
+  color: #00ff41 !important;
+}
+
+a:hover {
+  color: #00cc34 !important;
+  text-decoration: none !important;
+}
+
+/* Muted text */
+.text-muted,
+.subtle {
+  color: #6a6a6a !important;
+}

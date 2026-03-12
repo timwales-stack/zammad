@@ -155,14 +155,16 @@ services:
 
   # ─── Elasticsearch (Full-Text Search) ───────────────────
   elasticsearch:
-    image: bitnami/elasticsearch:8
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
     container_name: br-elasticsearch
     restart: always
     environment:
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASS}
-      ELASTICSEARCH_HEAP_SIZE: 1g
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      ELASTIC_PASSWORD: ${ELASTICSEARCH_PASS}
     volumes:
-      - elasticsearch-data:/bitnami/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - backend
     healthcheck:
