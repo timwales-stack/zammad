@@ -23,6 +23,9 @@ x-shared:
       ELASTICSEARCH_PORT: "9200"
       ELASTICSEARCH_SCHEMA: http
       AUTOWIZARD_RELATIVE_PATH: autowizard.json
+      RAILS_TRUSTED_PROXIES: "127.0.0.1,::1,172.18.0.0/16"
+      ZAMMAD_HTTP_TYPE: https
+      ZAMMAD_FQDN: support.blackravenit.com
     volumes: &zammad-volumes
       - zammad-storage:/opt/zammad/storage
       - ./autowizard.json:/opt/zammad/autowizard.json:ro
@@ -32,6 +35,7 @@ x-shared:
       - ./custom/apple-touch-icon.png:/opt/zammad/public/apple-touch-icon.png:ro
       - ./custom/morpheus-logo.svg:/opt/zammad/public/assets/morpheus-logo.svg:ro
       - ./custom/inject-branding.sh:/docker-entrypoint.d/inject-branding.sh:ro
+      - ./custom/nginx-default.conf:/etc/nginx/sites-enabled/default:ro
       - ./custom/icons/logo.svg:/opt/zammad/public/assets/images/icons/logo.svg:ro
       - ./custom/icons/logotype.svg:/opt/zammad/public/assets/images/icons/logotype.svg:ro
       - ./custom/icons/full-logo.svg:/opt/zammad/public/assets/images/icons/full-logo.svg:ro

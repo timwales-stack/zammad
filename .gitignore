@@ -126,3 +126,10 @@ schema.graphql
 # Devcontainer
 /.devcontainer/with-mailserver/certs/*
 !/.devcontainer/with-mailserver/certs/.gitkeep
+
+# Black Raven dev artifacts
+/screenshots/
+/test-results/
+/scripts/dump-*.mjs
+/scripts/screenshot-*.js
+/scripts/screenshot-*.mjs

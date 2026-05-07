@@ -46,13 +46,11 @@ In the ACL editor, add a group:
 ```json
 "groups": {
   "group:blackraven-team": [
-    "user1@blackravenit.com",
-    "user2@blackravenit.com"
+    "william@blackravenit.com",
+    "edgar@blackravenit.com"
   ]
 }
 ```
-
-> **Replace** with actual Black Raven email addresses as they're onboarded.
 
 ### Step 4: Write the ACL Rule
 
@@ -62,12 +60,12 @@ Add this rule to the `acls` section. This allows Black Raven users to access ONL
 {
   "action": "accept",
   "src": ["group:blackraven-team"],
-  "dst": ["tag:blackraven:80,443,8090"]
+  "dst": ["tag:blackraven:80,443,8090,8091"]
 }
 ```
 
 This means:
-- Black Raven users **CAN** access `blackraven-servicedesk` on ports 80, 443, 8090
+- Black Raven users **CAN** access `blackraven-servicedesk` on ports 80, 443, 8090 (production), 8091 (staging)
 - Black Raven users **CANNOT** access SSH (22), any other port, or any other Morpheus machine
 - Black Raven users **CANNOT** see or reach `morpheus-production`, `morpheus`, or `desktop-leqsl2f`
 
@@ -94,7 +92,10 @@ Here is a complete ACL policy example:
     "tag:morpheus-infra": ["autogroup:admin"]
   },
   "groups": {
-    "group:blackraven-team": []
+    "group:blackraven-team": [
+      "william@blackravenit.com",
+      "edgar@blackravenit.com"
+    ]
   },
   "acls": [
     // Morpheus admins can access everything
@@ -103,11 +104,11 @@ Here is a complete ACL policy example:
       "src": ["autogroup:admin"],
       "dst": ["*:*"]
     },
-    // Black Raven team can ONLY access their service desk (web ports)
+    // Black Raven team can ONLY access their service desk (web + staging ports)
     {
       "action": "accept",
       "src": ["group:blackraven-team"],
-      "dst": ["tag:blackraven:80,443,8090"]
+      "dst": ["tag:blackraven:80,443,8090,8091"]
     }
   ],
   "ssh": [
